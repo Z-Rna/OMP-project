@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage[T1]{fontenc}
+\usepackage{scrextend}
 
 \begin{document}
     \title{
@@ -34,7 +35,26 @@
     \pagebreak
     
     \section{Motywacja}
-        Celem niniejszego projketu jest stworzenie efektywnego programu wyszukującego liczby pierwsze w zadanym przedziale. W tym celu wykorzystamy porogramowanie równoległe. Pozwoli to na efektywniejsze wykorzystanie zasobów komputerowych jakimi dysponujemy. W wyniku otrzymamy program mogący wykorzystywać do 100\% mocy obliczeniowej procesora komputera, na którym zostanie uruchomiony. 
+        Celem niniejszego projketu jest stworzenie efektywnego programu wyszukującego liczby pierwsze w zadanym przedziale. W tym celu wykorzystamy porogramowanie równoległe. Pozwoli to na efektywniejsze wykorzystanie zasobów komputerowych jakimi dysponujemy. W wyniku otrzymamy program mogący wykorzystywać do 100\% mocy obliczeniowej procesora komputera, na którym zostanie uruchomiony. Pozwoli to nam na znaczącą redukcję czasu wykonania programu względem standardowej wersji sekwencyjnej programu.
+        
+        W rozwiązaniu sotsujemy algorytm Sita Erastotenesa \emph{(SE)}, oraz pełnego przeglądu wszystkich możliwych dzielników \emph{(PPD)} danej liczby. Oba algorytmy mają olbzymi potencjał zrównoleglenia, jednak szczególną uwagę poświęcimy zagadnieniu zrównoleglania i badania jego efektów dla Sita Erastotenesa.
+                 
+    \section{Specyfikacja platformy uruchomieniowej}
+        \begin{addmargin}{3em}
+            \begin{description}
+                \item[Procesor] Intel Core i5-9300H
+                    \begin{description}
+                        \item[Procesorów Fizycznych] 4
+                        \item[Procesorów Logicznych]  8
+                        \item[Pamięć Cache]  8 MB Intel® Smart Cache 
+                    \end{description} 
+                \item[System Operacyjny] Windows 10 Pro 20H2
+                \item[IDE] Visual Studio 2019
+                % TODO: check vtune version
+                \item[Oprogramowanie Testujące] 5t4iori
+            \end{description}
+        \end{addmargin}
+
         
     \section{Zastosowane Algorytmy}
         \subsection{Opis teoretyczny}
