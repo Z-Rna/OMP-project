@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage{scrextend}
+\usepackage{glossaries}
+
+\makenoidxglossaries
+
+\newglossaryentry{WLP}{name=WLP,description={Wektor Liczb Przeszukiwanych}}
+
+\newglossaryentry{SE}{name={SE},description={Sito Erastotenesa}}
+
+\newglossaryentry{PPLL}{name={PPD},description={Pełny Przegląd Listy Liczb}}
+
+\newglossaryentry{WLU}{name={WLU},description={Wektor Liczb Uporządkowanych}}
+
+\newglossaryentry{TLP}{name={TLP},description={Tablica Liczb Pierwszch}}
+
+\begin{document}
+    \title{
+        Sprawozdanie z Projektu Pierwszego \\
+        \small{Laboratorium Przetwarzania Równoległego}
+    }
+    \author{
+        \textbf{Piotr Tylczyński}\\
+        \texttt{L7 / 141331} \\
+        \texttt{Środa, 11:45} \\
+        \texttt{piotr.tylczynski@student.put.poznan.pl}
+        \and
+        \textbf{Zuzanna Rękawek}\\
+        \texttt{L7 / 141304} \\
+        \texttt{Środa, 11:45} \\
+        \texttt{zuzanna.rekawek@student.put.poznan.pl}
+        \date{}
+        }
+    \begin{titlepage}
+        \maketitle
+        \centering{
+            Oddane: 29.04.2021 \\
+            Deadline: 29.04.2021 \\
+        }
+        \hfill \break
+        \centering{Wersja 1}
+            
+            
+    \end{titlepage}
+    
+    \tableofcontents
+    \pagebreak
+    
+    \section{Motywacja}
+        Celem niniejszego projketu jest stworzenie efektywnego programu wyszukującego liczby pierwsze w zadanym przedziale. W tym celu wykorzystamy porogramowanie równoległe. Pozwoli to na efektywniejsze wykorzystanie zasobów komputerowych jakimi dysponujemy. W wyniku otrzymamy program mogący wykorzystywać do 100\% mocy obliczeniowej procesora komputera, na którym zostanie uruchomiony. Pozwoli to nam na znaczącą redukcję czasu wykonania programu względem standardowej wersji sekwencyjnej programu.
+        
+        W rozwiązaniu wykorzystamy algorytm Sita Erastotenesa (\gls{SE}). Jest to algorytm pozwalający na osiągnięcie znaczącego przyspieszenia, po jego zrównolegleniu. Dodatkowo rozważymy wykorzystanie i zrównoleglanie algorytmu Pełnego Przeglądu List Liczb (\gls{PPLL}).
+                 
+    \section{Specyfikacja platformy uruchomieniowej}
+        \begin{addmargin}{3em}
+            \begin{description}
+                \item[Procesor] Intel Core i5-9300H
+                    \begin{description}
+                        \item[Procesorów Fizycznych] 4
+                        \item[Procesorów Logicznych]  8
+                        \item[Pamięć Cache]  8 MB Intel® Smart Cache 
+                    \end{description} 
+                \item[System Operacyjny] Windows 10 Pro 20H2
+                \item[IDE] Visual Studio 2019
+                % TODO: check vtune version
+                \item[Oprogramowanie Testujące] 5t4iori
+            \end{description}
+        \end{addmargin}
+        
+    \section{Zastosowane Algorytmy}
+        \subsection{Opis teoretyczny}
+            \subsubsection{Sekwencyjne Sito Erastotenesa}
+                W swojej najprostszej formie \gls{SE} jest alogrytmem, który przyjmuje na swoje wejście wektor liczb naturalnych, uporządkowanych rosnąco z krokiem jeden - w dalszych częściach teog dokumentu nazywanych Wektorem Liczb Uporządkowanych - ()\gls{WLU}). Zastosowanie \gls{WLU} pozwala na dokonanie pewnej optymalizacji. Polega ona na sprawdzaniu tylko liczb znajdujących się przed połową takiego wektora. Optymalizacja taka jest możliwa, ponieważ \gls{WLU} jest rosnąco uporządkowany, więc wiemy, że wszystkie liczby złozone w drugiej połowie są, wielokrotnością, liczb znajdujących się w pierwszej połowie. Biorąc pod uwagę sposób działania algorytmu, który wykreśla z \gls{WLU} wszystkie wielokrotności liczb, mamy pewność, że po przejrzeniu wszystkich liczb z pierwszej połowy, wyeliminowaliśmy wszystkie pozostałe z drugiej połowy.
+                
+                Sam sposób działania \gls{SE} jest prosty. Dla każdej znalezionej liczby w \gls{WLU} wykreśl z \gls{WLU} wszystkie jej wielokrotności - w ten sposób pozbywamy się liczb złożonych. Następnie przejdź do kolejnej liczby w \gls{WLU} i powtórz poprzedni krok. Algorytm ten działa o ile przeglądamy liczby z zakresu 1 do N (N dowolna liczba całkowita). Jeżeli pierwszą liczbą w \gls{WLU} nie jest 1 to należy stworzyć sztuczny iterator, który będzie przechodził przez dodatkową tablicę zawierającą wszystkie liczby pierwsze (\gls{TLP}). Kolejną optymalizację jaką można dokonać jest ograniczenie wielkości tablicy liczb peirwszych. Maksymalna wymagana liczba pierwsza to pierwiastek kwadratowy z ostatniej liczby wchodzącej w skład \gls{WLU}. Tą własność można łatwo udowodnić, ponieważ największy dzielnik dowolnej liczby naturalnej nie może być większy niż pierwiastek kwadratowy z niej samej.
+            
+            \subsubsection{Sekwencyjny Przegląd Listy Liczb}
+                Jest to jden z najprostszych algorytmów wyszukiwania liczb pierwszych. W swojej sekwencyjnej wersji polega na pełnym przejrzeniu \gls{WLU} i znalezieniu w nim liczb pierwszych. Jest to algorytm mniej skuteczny niż \gls{SE}, jednak szybszy w implementacji.
+                
+            \subsubsection{Sekwencyjne określanie pierwszości liczyb}
+                Działa na zasadzie iterowania się po wszystkich liczbach z zakresu 2 do wartości liczby. Jednocześnie sprawdzamy, czy któraś z liczb nie jest dzielnikiem sprawdzanej liczby. Jeżeli tak to wiemy, że dana liczba jesst liczbą złożoną. Po zakończeniu iterowania i nie znalezieniu dzielnika, możemy stwierdzić, że sprawdzana liczba jest pierwsza. Optymalizacja algorytmu polega na sprawdzaniu liczby tylko i wyłącznie nie większych niż pierwiastek kwadratowy z testowanej liczby. Uzasadnienie tego faktu można znaleźć w algorytmie \gls{SE}.
+        \subsection{Realizacja praktyczna}
+    
+    \clearpage
+    \printnoidxglossaries
+\end{document}
