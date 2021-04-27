@@ -20,6 +20,9 @@ int main(int argc, char* argv[])
 	std::vector<int> v5 = funcional::basicSieve(start, end);
 	compareVectors(v, v5);
 
+	std::vector<int> v6 = funcional::optimizedSive(start, end);
+	compareVectors(v, v6);
+
 	//printValues(v3);
 	return 0;
 }
