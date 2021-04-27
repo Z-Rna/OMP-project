@@ -1,0 +1,3 @@
+﻿  primes.cpp
+C:\Users\Zuzanna\source\repos\primes\primes\primes.cpp(12,9): warning C4101: "x": lokalna zmienna, do której nie istnieje odwołanie
+  primes.vcxproj -> C:\Users\Zuzanna\source\repos\primes\Debug\primes.exe

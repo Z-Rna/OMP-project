@@ -1,0 +1,15 @@
+-r
+C:\Users\Zuzanna\source\repos\primes\primes\VTune Profiler Results\primes\r000ps
+--stack-stitching
+--data-limit-mb=1000
+--disk-space-limit=0
+--mrte-type=java,dotnet
+--itt-config=frame
+--stackwalk=offline
+--mrte-mode=auto
+--type=cpu:counters:nostack
+--type=cpu:nostack
+--interval=100
+--app-working-dir=C:\Users\Zuzanna\source\repos\primes\Release
+--
+C:\Users\Zuzanna\source\repos\primes\Release\primes.exe
