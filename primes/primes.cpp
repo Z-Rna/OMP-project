@@ -1,13 +1,11 @@
-﻿#include <stdio.h>
-#include <time.h>
-#include <iostream>
-#include "omp.h"
-#include "fun.h"
+﻿
+#include "sequential.h"
 
 
 
 int main(int argc, char* argv[])
 {
-	std::cout << isPrime(5) << std::endl;
+	std::vector<int> v = sequential::withSieve(2, 64);
+	printValues(v);
 	return 0;
 }
