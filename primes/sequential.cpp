@@ -3,17 +3,17 @@
 std::vector<int> sequential::withoutSieve(int start, int end, bool printOutput){
     int size = end - start + 1;
     std::vector<int> result;
-    clock_t timeStart, timeStop;
+    double timeStart, timeStop;
 
     result.reserve(size);
-    timeStart = clock();
+    timeStart = omp_get_wtime();
     for (size_t i = start; i <= end; ++i){
         if (isPrime(i)) {
             result.push_back(i);
         }
     }
-    timeStop = clock();
-    if(printOutput) period(timeStart, timeStop);
+    timeStop = omp_get_wtime();
+    if(printOutput) period(timeStart, timeStop, "sequential::withoutSieve");
 
     return result;
 }
@@ -21,9 +21,9 @@ std::vector<int> sequential::withoutSieve(int start, int end, bool printOutput){
 std::vector<int> sequential::withSieve(int start, int end, bool printOutput)
 {
     int sqrtEnd = (int)sqrt(end);
-    clock_t timeStart, timeStop;
+    double timeStart, timeStop;
 
-    timeStart = clock();
+    timeStart = omp_get_wtime();
     std::vector<int> primes = sequential::withoutSieve(2, sqrtEnd, false);
     std::vector<bool> isPrime(end + 1, false);
 
@@ -48,9 +48,9 @@ std::vector<int> sequential::withSieve(int start, int end, bool printOutput)
         if (!isPrime[i]) result.push_back(i);
     }
 
-    timeStop = clock();
+    timeStop = omp_get_wtime();
 
-    if (printOutput) period(timeStart, timeStop);
+    if (printOutput) period(timeStart, timeStop, "sequential::withSieve");
 
     return result;
 

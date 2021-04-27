@@ -13,10 +13,11 @@ bool isPrime(int p)
 	return true;
 }
 
-void period(clock_t start, clock_t stop)
+void period(double start, double stop, std::string func)
 {
-	double period = ((double)stop - (double)start)/1000.0;
-	std::cout << "Period: " << period << std::endl;
+	std::cout << func; 
+	double period = stop - start;
+	std::cout << " Period: " << period << std::endl;
 }
 
 void printValues(std::vector<int> result)

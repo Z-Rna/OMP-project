@@ -141,11 +141,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="domain.cpp" />
     <ClCompile Include="fun.cpp" />
     <ClCompile Include="primes.cpp" />
     <ClCompile Include="sequential.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="domain.h" />
     <ClInclude Include="fun.h" />
     <ClInclude Include="sequential.h" />
   </ItemGroup>

@@ -8,7 +8,7 @@
 
 bool isPrime(int p);
 
-void period(clock_t start, clock_t stop);
+void period(double start, double stop, std::string func);
 
 void printValues(std::vector<int> result);
 
