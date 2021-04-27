@@ -12,5 +12,7 @@ void period(double start, double stop, std::string func);
 
 void printValues(std::vector<int> result);
 
+void compareVectors(std::vector<int> v1, std::vector<int> v2);
+
 
 
