@@ -83,7 +83,9 @@
                 
                 Zjawisko False Sharingu prowadzi do znaczengo spadku efektywności programu. W skrajnych przypadkach może okazać się, że program jest znacząco wolniejszy od swojej wersji sekwencyjnej. Jest to bezpośrednie następstwo wielokrotnego i niepotrzebnego unieważniania liń pamięci. Co sprawia, że wymagany jest dodatkowy narzut czasowy związnay z transferem danych pomiędzy poszczególnymi poziomami pamięci komputera.
                 
+                Rozwiązaniem problemu False Sharingu jest odpowiednia separacja przestrzenna danych. W przypadku tabel można to zapewnić przez umieszczenie wolnych miejsc pomiędzy danymi do zapisu. W ten sposób dane nie będą leżały na tej samej lini pamięci.
                 
+                W wyniku eksperymentu przeprowadzonego w ramach zadania pierwszego wyznaczyliśmy wielkość pojedyńczej lini pamięci na 64B
         
     \section{Zastosowane Algorytmy}
         \subsection{Opis teoretyczny}
@@ -108,6 +110,12 @@
                     \item[\texttt{omp\_set\_num\_threads()}] ustawia maksymalną ilość wątków jakiej może używać program
                     \item[]   
                 \end{description}
+            
+            \subsubsection{Równoległe Określanie Pierwszości Liczb}
+                \paragraph{Podejście Naiwne}
+            \subsection{Równoległy Przegląd Listy Liczb}
+            
+            \subsubsection{Równoległe Sito Erastotenesa}
                 
     
     \clearpage
