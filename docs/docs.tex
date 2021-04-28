@@ -3,6 +3,9 @@
 \usepackage{scrextend}
 \usepackage{glossaries}
 \usepackage{minted}
+\usepackage{graphicx}
+
+\graphicspath{ {../img/} }
 
 \makenoidxglossaries
 
@@ -15,6 +18,24 @@
 \newglossaryentry{WLU}{name={WLU},description={Wektor Liczb Uporządkowanych}}
 
 \newglossaryentry{TLP}{name={TLP},description={Tablica Liczb Pierwszch}}
+
+\newglossaryentry{SPPLL}{name={SPPLL},description={Sekwencyjny Pełny Przegląd Listy Liczb}}
+
+\newglossaryentry{RNPPLL}{name={RNPPLL},description={Równoległy Naiwny Pełny Przegląd Listy Liczb}}
+
+\newglossaryentry{ROPPLL}{name={ROPPLL},description={Równoległy Naiwny Pełny Przegląd Listy Liczb}}
+
+\newglossaryentry{SSE}{name={SSE},description={Sekwencyjne Sito Erastotenesa}}
+
+\newglossaryentry{RNSED}{name={RNSED},description={Równoległe Naiwne Sito Erastotenesa w wersji Domenowej}}
+
+\newglossaryentry{ROSED}{name={RNSED},description={Równoległe Optymalne Sito Erastotenesa w wersji Domenowej}}
+
+\newglossaryentry{RNSEF}{name={RNSED}, description={Równoległe Naiwne Sito Erastotenesa w wersji Funkcyjnej}}
+
+\newglossaryentry{ROSEF}{name={RNSED}, description={Równoległe Optymalne Sito Erastotenesa w wersji Funkcyjnej}}
+
+
 
 \begin{document}
     \title{
@@ -52,7 +73,7 @@
         Celem niniejszego projketu jest stworzenie efektywnego programu wyszukującego liczby pierwsze w zadanym przedziale. W tym celu wykorzystamy porogramowanie równoległe. Pozwoli to na efektywniejsze wykorzystanie zasobów komputerowych jakimi dysponujemy. W wyniku otrzymamy program mogący wykorzystywać do 100\% mocy obliczeniowej procesora komputera, na którym zostanie uruchomiony. Pozwoli to nam na znaczącą redukcję czasu wykonania programu względem standardowej wersji sekwencyjnej programu.
         
         W rozwiązaniu wykorzystamy algorytm Sita Erastotenesa (\gls{SE}). Jest to algorytm pozwalający na osiągnięcie znaczącego przyspieszenia, po jego zrównolegleniu. Dodatkowo rozważymy wykorzystanie i zrównoleglanie algorytmu Pełnego Przeglądu List Liczb (\gls{PPLL}).
-                 
+        
     \section{Uwagi Ogólne}
         Niestety po zakończeniu pisania tego sprawozdania zdaliśmy sobię sprawę z pewnego błędu jaki wkradł się podczas tworzenia i eksperymentowania z poszczególnymi algorytmami. Niestety pomyliliśmy ze sobą nazwy podejścia domenowego i funkcyjnego. Z tego powodu każde wystąpienie słowa \emph{domenowy} powinno zostać zastąpione słowem \emph{funkcyjny} i na odwrót.
         
@@ -134,7 +155,7 @@ bool isPrime(int p)
                     \caption{Sekwencyjne Określanie Pierwszości Liczb}
                 \end{figure}
                 
-            \subsubsection{Sekwencyjny Przegląd Listy Liczb}
+            \subsubsection{Sekwencyjny Pełny Przegląd Listy Liczb - \gls{SPPLL}}
             Tak jak opisano w części teoretycznej polega na pełnym przeglądzie wszystkich liczb z podanego zakresu. Aby zpoptymalizować wykonanie programu ustalamy wielkość wynikowego wektora na samym początku. Następnie w pętli sprawdzamy wszystkie liczby w zakresie od \emph{start} do \emph{end}. Samo sprawdzanie odbywa się w funkcji \emph{isPrime}, która została szczególowo opisana wcześniej.
                 \begin{figure}[H]
                     \begin{minted}[linenos]{cpp}
@@ -159,7 +180,7 @@ std::vector<int> sequential::withoutSieve(int start, int end, bool printOutput){
                     \caption{Sekwecyjny Przegląd Listy Liczb}
                 \end{figure}
                 
-            \subsubsection{Sekwencyjne Sito Erastotenesa}
+            \subsubsection{Sekwencyjne Sito Erastotenesa - \gls{SSE}}
                 Dokładne dziłanie tego algorytmu zostało także zaprezentowane w części teoretycznej. Algorytm rozpoczyna od wyznaczenia wszystkich liczb pierwszych, aż do pierwiastka górnej granicy przeszukiwania \emph{(wyjaśnienie w części teoretycznej)}. Następnie w pierwszej pętli $for$ usuwamy wszystkie wielokrotności kolejnych liczb pierwszych znajdujących się w tablicy $primes$. Jeżeli dana liczba została oznaczona jako $true$ to mamy pewność, że jest liczbą złożoną. Po sprawdzeniu ostatniej liczby z wektora $primes$, możemy przepisać wszystkie liczby, które nie zostały zakwalifikowane jako złożone.
                 \begin{figure}
                     \begin{minted}[linenos]{cpp}
@@ -192,12 +213,9 @@ std::vector<int> sequential::withSieve(int start, int end, bool printOutput){
                     \caption{Sekwencyjne Sito Erastotenesa}
                 \end{figure}
                 
-            \subsubsection{Równoległe Określanie Pierwszości Liczb}
-                \paragraph{Podejście Naiwne}
-                \paragraph{Podejście Optymalne}
             \subsection{Równoległy Pelny Przegląd Listy Liczb}
                 Zrównoleglenie Sekwencyjnego algorytmu Przeglądania Listy Liczb, opiera się na podziale \gls{WLU} pomiędzy wszystkie wątki. W takim wypadku każdy wątek będzie odpowiedzialny za przeszukiwanie swojej i tylko swojej części \gls{WLU}. Sercem algorytmu jest funkcja $isPrime$ wywoływana dla każdej liczby w celu sprawdzenia, czy jest pierwsza. Jeżeli taka jest to należy ją zapisać do wektora wyjściowego.
-                \paragraph{Podejście Naiwne}
+                \paragraph{Podejście Naiwne - \gls{RNPPLL}}
                     W wersji naiwnej algorytm zapisuje wyniki do jednowymiarowego wektora. Takie rozwiązanie nie jest poprawne. W skrajnych przypadkach może wystąpić zjawisko wyścigu. Okaże się, że istnieją momenty, w których wiele wątków stara się zapisać do wektora wynikowego efekty swojego przetwarzania. Spowoduje to, że wynikowy wektor może zostać łatwo uszkodzony. Dodatkowo program jest wrażliwy na wystąpienie zjawiska false sharingu. Nie spowoduje on niepoprawnego działania kodu, jednak znacząco wpłynie na prędkość przetwarzania. Stanie się tak, ponieważ elementy wekotra wyjściowego są ułożone w pamięci jeden obok drugiego, co łatwo prowadzi do uniważniania sąsiednich liń pamięci. 
                     \begin{minted}[linenos]{cpp}
 std::vector<int> primes(int start, int end, bool printOutput){
@@ -219,7 +237,7 @@ std::vector<int> primes(int start, int end, bool printOutput){
 }
                     \end{minted}
                 
-                \paragraph{Podejście Optymalne}
+                \paragraph{Podejście Optymalne - \gls{ROPPLL}}
                     Poprawa wersji naiwnej jest prosta. Wystarczy dodać strukturę pośrednią. W taki sposób, że wątki równolegle będą do niej zapisywać, a później w sposób sekwencyjny spłaszczymy ją do jednowymiarowego wektora. Wspomnianą strukturą może być dwuwymiarowy wektor. W takim wypadku każdy z procesów będzie zapisywał do swojego własnego wiersza, a na końcu w sposób sekwencyjny połączymy wszystkie wiersze w jedną tabelę.
                     
                     Zjawisko false sharingu nie zajdzie, ponieważ komórki pamięci będą znacząco od siebie oddzielone - conjmniej o jeden wiersz w wektorze. Zjawisko wyścigu także zostanie wyeliminowane. Żadne dwa wątki nie mogą zapisywać do tego samego wiersza, co oznacza, że mają swoje osobne przestrzenie robocze.
@@ -258,7 +276,7 @@ std::vector<int> primes(int start, int end, bool printOutput){
             \subsubsection{Równoległe Sito Erastotenesa - wersja domenowa}
                 Zrównoleglenie \gls{SE} dla podejścia domenowego polega na przekazaniu całego \gls{WLU}, ale tylko części wektora liczb pierwszych. W taki sposób każdy wątek będzie odpowiedzialny za sprawdzenie, czy elementy \gls{WLU} są podzielne przez liczby pierwsze znane dla niego. Tak samo jak w sekwencyjnym \gls{SE} i tutaj można zastosować optymalizację w postaci ograniczenia największej liczby pierwszej do sprawdzenia do pierwiastka kwadratowego największej z liczb w \gls{WLU}.
                 
-                \paragraph{Podejście Naiwne}
+                \paragraph{Podejście Naiwne - \gls{RNSED}}
                     W tej wersji naiwnej algorytmu rozpoczynamy od wygenerowania wszystkich potrzebnych liczb pierwszych. Następnie inicjalizujemy odpowiednio duży wektor przetrzymujący rozwiązanie. Następnie w pętli za pomocą odpowiedniej dyrektywy \emph{OMP} przydzielamy liczby pierwsze do wątków. Następnie każdy z wątków sprawdza całe \gls{WLU} w celu sprawdzenia, czy nie znajdują się w nim wielokrotości przydzielonych mu liczb pierwszych. Jeżeli takie występują to są oznaczane jako liczby pierwsze - wpis do wektora $isPrime$ wartości $true$ w odpowiednie miejsce. Na końcu powstały wektor $isPrime$ przetwarzamy na wektor wynikowy.
                     
                     Problemem wersji naiwnej jest niepoprawność generowanych wyników, oraz występujące zjawisko false sharingu - oba spowodowane używaniem wspólnej listy $isPrime$. Jego geneza jest dokładnie taka sama jak w przypadku naiwej wersji algorytmu \gls{PPLL}
@@ -298,7 +316,7 @@ std::vector<int> domain::basicSieve(int start, int end, bool printOutput){
                         \caption{Równoległe Naiwne Sito Erastotenesa w Wersji Domenowej}
                     \end{figure}
                     
-                \paragraph{Podejście Optymalne}
+                \paragraph{Podejście Optymalne - \gls{ROSED}}
                     W przypadku podejścia domenowego znaczącej zmianie ulega sposób przetrzymywania rozwiązań. Od teraz przechowujemy je w dwuwymiarowym wektorze. Na końcu spłaszczamy tą dwuwymiarową strukturę do jednowymiarowego wektora. Takie rozwiązanie pomoże nam zapobiec zjawisku false sharingu, oraz zjawisku wyścigu. Dzięki temu wyniki generowane przez program będą poprawne i wykonane w sposób efektywny.
                     \begin{figure}[H]
                         \begin{minted}[linenos]{cpp}
@@ -344,7 +362,7 @@ std::vector<int> domain::optimizedSive(int start, int end, bool printOutput){
                 
                 \subsubsection{Równoległe Sito Erastotenesa - wersja funkcyjna}
                     Zrównoeglenie Sita Erastotenesa w wersji funkcyjnej polega na podzieleniu \gls{WLU} na części i rozdystrybuowanie ich pomiędzy poszczególne wątki. Natomiast każdy z wątków dostanie cały zbiór liczb pierwszych. Także i w podejściu funkcyjnym można zastosować optymalizacje ograniczające ilości liczb pierwszych do testowania. Dokładne uzasadnienie można znaleź w części teoretycznej niniejszego sprawozdania.
-                    \paragraph{Podejście Naiwne}
+                    \paragraph{Podejście Naiwne - \gls{RNSEF}}
                         Naiwna implementacja rozpoczyna od wygenerowania odpowiedniej ilości liczb pierwszych. Następnie jest deklarowana odpowiednio duża tablica do przechowywania wyników przetwarzania. Jest to wektor jedno wymiarowy, co będzie miało swoje poważne konsekwencje w przyszłości. Następnie w regionie równoległym każdy z wątków dostaje swoją część tablicy do przeszukania. Po wyjściu z regionu równoległego wynikowy wektor zostaje zamieniony na wektor liczb pierwszych.
                         
                         W przypadku tej implementacji wyniki zawsze wychodzą poprawne. Dzieje się tak, ponieważ nie może tutaj wystąpić zjawisko wyścigu - zauważmy, że każdy z wątków działa na swojej części \gls{WLU} i dlatego nigdy nie będą działały na tym samym obszarze wektora $isPrime$.
@@ -388,7 +406,7 @@ std::vector<int> funcional::basicSieve(int start, int end, bool printOutput){
                             \caption{Równoegłe Naiwne Sito Erastotenesa w Wersji Funkcyjnej}
                         \end{figure}
                         
-                    \paragraph{Podejście Optymalne}
+                    \paragraph{Podejście Optymalne - \gls{ROSEF}}
                         Uoptymalnienie 
                         \begin{figure}[H]
                             \begin{minted}[linenos]{cpp}
@@ -480,6 +498,166 @@ std::vector<int> funcional::optimizedSive(int start, int end, bool printOutput){
         \subsection{Wyniki Uzyskane Dla Algorytmów Równoległych}
             % TODO: add images too
             
+        \subsection{Analiza Udziału Poszczególnych Procesorów}
+            W poniższym zestawieniu porównane zostaną procentowe udziały wkorzystania każdego z dostępnych procesorów logicznych platformy testującej.
+            
+            \subsubsection{Sekwencyjny Pełny Przegląd Listy Liczb - \gls{SPPLL}}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{sekwencyjny_bezsita_2_MAX}
+                    \caption{\gls{SPPLL} dla liczb z zakresu $2 .. MAX$}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{sekwencyjny_bezsita_2_MAX2}
+                    \caption{\gls{SPPLL} dla liczb z zakresu $2 .. MAX / 2$}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{sekwencyjny_bezsita_MAX2_MAX}
+                    \caption{\gls{SPPLL} dla liczb z zakresu $MAX / 2 .. MAX$}
+                \end{figure}
+            
+            \subsubsection{Sekwencyjne Sito Erastotenesa - \gls{SSE}}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{sekwencyjny_sito_2_MAX}
+                    \caption{\gls{SSE} dla liczb z zakresu $2 .. MAX$}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{sekwencyjny_sito_2_MAX2}
+                    \caption{\gls{SSE} dla liczb z zakresu $2 .. MAX / 2$}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{sekwencyjny_sito_MAX2_MAX}
+                    \caption{\gls{SSE} dla liczb z zakresu $MAX / 2 .. MAX$}
+                \end{figure}
+        
+            \subsubsection{Równoległe Naiwne Sito Erastotenesa wersja Funkcyjna}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion4_2_MAX}
+                    \caption{\gls{RNSEF} dla liczb z zakresu $2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion4_2_MAX2}
+                    \caption{\gls{RNSEF} dla liczb z zakresu $2 .. MAX / 2$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion4_MAX2_MAX}
+                    \caption{\gls{RNSEF} dla liczb z zakresu $MAX / 2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion8_2_MAX}
+                    \caption{\gls{RNSEF} dla liczb z zakresu $2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion8_2_MAX2}
+                    \caption{\gls{RNSEF} dla liczb z zakresu $2 .. MAX / 2$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion8_MAX2_MAX}
+                    \caption{\gls{RNSEF} dla liczb z zakresu $MAX / 2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                
+            \subsubsection{Równoległe Optymalne Sito Erastotenesa wersja Funkcyjna}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_opt4_2_MAX}
+                    \caption{\gls{ROSEF} dla liczb z zakresu $2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_opt4_2_MAX2}
+                    \caption{\gls{ROSEF} dla liczb z zakresu $2 .. MAX / 2$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_opt4_MAX2_MAX}
+                    \caption{\gls{ROSEF} dla liczb z zakresu $MAX / 2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_opt8_2_MAX}
+                    \caption{\gls{ROSEF} dla liczb z zakresu $2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_opt8_2_MAX2}
+                    \caption{\gls{ROSEF} dla liczb z zakresu $2 .. MAX / 2$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_opt8_MAX2_MAX}
+                    \caption{\gls{ROSEF} dla liczb z zakresu $MAX / 2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                
+            \subsubsection{Równoległe Optymalne Sito Erastotenesa wersja Domenowa}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_opt4_2_MAX}
+                    \caption{\gls{ROSED} dla liczb z zakresu $2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_opt4_2_MAX2}
+                    \caption{\gls{ROSED} dla liczb z zakresu $2 .. MAX / 2$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_opt4_MAX2_MAX}
+                    \caption{\gls{ROSED} dla liczb z zakresu $MAX / 2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_opt8_2_MAX}
+                    \caption{\gls{ROSED} dla liczb z zakresu $2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_opt8_2_MAX2}
+                    \caption{\gls{ROSED} dla liczb z zakresu $2 .. MAX / 2$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_opt8_MAX2_MAX}
+                    \caption{\gls{ROSED} dla liczb z zakresu $MAX / 2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                
+            \subsubsection{Równoległe Naiwne Pełne Przeglądanie Listy Liczb}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_bezsita4_2_MAX}
+                    \caption{\gls{RNPPLL} dla liczb z zakresu $2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_bezsita4_2_MAX2}
+                    \caption{\gls{RNPPLL} dla liczb z zakresu $2 .. MAX / 2$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_bezsita4_MAX2_MAX}
+                    \caption{\gls{RNPPLL} dla liczb z zakresu $MAX / 2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_bezsita8_2_MAX}
+                    \caption{\gls{RNPPLL} dla liczb z zakresu $2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_bezsita8_2_MAX2}
+                    \caption{\gls{RNPPLL} dla liczb z zakresu $2 .. MAX / 2$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_domain_bezsita8_MAX2_MAX}
+                    \caption{\gls{RNPPLL} dla liczb z zakresu $MAX / 2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                
+            \subsubsection{Równoległe Optymalne Pełne Przeglądanie Listy Liczb}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_bezsita4_2_MAX}
+                    \caption{\gls{ROPPLL} dla liczb z zakresu $2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_bezsita4_2_MAX2}
+                    \caption{\gls{ROPPLL} dla liczb z zakresu $2 .. MAX / 2$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_bezsita4_MAX2_MAX}
+                    \caption{\gls{ROPPLL} dla liczb z zakresu $MAX / 2 .. MAX$ dla 4 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_bezsita8_2_MAX}
+                    \caption{\gls{ROPPLL} dla liczb z zakresu $2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_bezsita8_2_MAX2}
+                    \caption{\gls{ROPPLL} dla liczb z zakresu $2 .. MAX / 2$ dla 8 procesorów logicznych}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{rownolegly_funcion_bezsita8_MAX2_MAX}
+                    \caption{\gls{ROPPLL} dla liczb z zakresu $MAX / 2 .. MAX$ dla 8 procesorów logicznych}
+                \end{figure}
         
     
     \clearpage
