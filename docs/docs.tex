@@ -31,7 +31,7 @@
 
 \newglossaryentry{ROSED}{name={RNSED},description={Równoległe Optymalne Sito Erastotenesa w wersji Domenowej}}
 
-\newglossaryentry{RNSEF}{name={RNSED}, description={Równoległe Naiwne Sito Erastotenesa w wersji Funkcyjnej}}
+\newglossaryentry{RNSEF}{name={RNSEF}, description={Równoległe Naiwne Sito Erastotenesa w wersji Funkcyjnej}}
 
 \newglossaryentry{ROSEF}{name={RNSED}, description={Równoległe Optymalne Sito Erastotenesa w wersji Funkcyjnej}}
 
@@ -269,7 +269,6 @@ std::vector<int> primes(int start, int end, bool printOutput){
     return result;
 }
                     \end{minted}
-                    \caption{Optymalny Równoległy Przegląd Listy Liczb}
                 \end{figure}
                 
                 
@@ -291,7 +290,7 @@ std::vector<int> domain::basicSieve(int start, int end, bool printOutput){
     timeStart = omp_get_wtime();
 #pragma omp parallel 
     {
-#pragma omp for schedule(static)
+#pragma omp for
         for (int i = 0; i < primes.size(); i++){
             int multiple = primes[i] * 2;
             while (multiple <= end) {
@@ -451,11 +450,24 @@ std::vector<int> funcional::optimizedSive(int start, int end, bool printOutput){
         }
     }
     period(timeStart, timeStop, "funcional::optimizedSive");
-    return result;
+    return result;  
 }
                             \end{minted}
                             \caption{Równoległe Optymalne Sito Erastotenesa w Wersji Funkcyjnej}
                         \end{figure}
+                        
+            \subsubsection{Sposób Podziłu pracy w programach}
+                Klauzula schedule określa sposób, w jaki iteracja for pętli jest dzielona między wątki w pętli for. Możliwe rodzaje podziału pracy:
+                \begin{description}
+                    \item[static] podział dokonany przed uruchomieniem pętli, najmniejszy narzut czasu wykonania
+                    \item[dynamic] wątki wykonują kolejno „pierwszy wolny” segment w przestrzeni instrukcji for, jednak powoduje to opóznienia z powodu 
+                    koniecznosci 
+                    \item[guided] trochę jak w dynamic, wielkość segmentu może ulegać zmniejszaniu
+                    \item[runtime] podział zależy od wartości zmiennej środowiskowej OMP SCHEDULE
+                \end{description}
+            
+            Praca dzielona jest zawsze na tyle czesci, ile jest watków. W kodach programów wiekszości mamy x iteracji, które dzielimy na n wątków wiec kazdy dostaje po x/n zadan; wyjątek stanowi kod RNSED, gdzie wprowadzilismy konstrukcje schedule.
+                        
     \section{Prezentacja i Omówienie eksperymentu obliczeniowo-pomiarowego}
         \subsection{Metodyka wykonania eksperymetów}
                 Wszystkie prezentowane eksperymenty zostały uruchomione na maszynie opisanej na początku tego sprawozdania. Do testów zostały użyte wszystkie algorytmy opisane w powyższej części sprawozdania.
@@ -493,10 +505,47 @@ std::vector<int> funcional::optimizedSive(int start, int end, bool printOutput){
         \subsection{Wyniki Uzyskane Dla Algorytmów Sekwencyjnych}
             Pierwszą grupą testowanych algorytmów, będą algorytmy sekwencyjne. Przeprowadzimy dla nich eksperymenty na wszystkich dostępnych zestawach testowych, które opisaliśmy powyżej. Ma to na celu identyfikację wszystkich cech stworzonych przez nas algorytmów sekwencyjnych. Dane zebrane w tym punkcie pomogą nam w określenie zmian wydajnościowych w dalszych analizach dla rozwiązań równoległyh.
             
-            % TODO: add images
+            Z tabelki zaprezentowanej poniżej, możemy odczytać, że w porównaniu metod \gls{SPPLL} i \gls{SSE} zdecydowanym faworytem jest motoda Sita Erastotenesa. 
             
         \subsection{Wyniki Uzyskane Dla Algorytmów Równoległych}
-            % TODO: add images too
+            Drugą grupą testowanych algorytmów są algorytmy rónoległe. Do analizy uzyskanych w tym punkcie wyników posłużymy się dwoma parametrami:
+                \begin{description}
+                    \item[Acceleration] określa przyspieszenie algorytmu zrównoległego względem najszybszego odpowiadającego mu i prezętowanego algorytmu sekwencyjnego - większa wartość = lepiej
+                    \item[Efektywność] stosunek \emph{Acceleration} względem ilość procesorów logicznych - większa wartość = lepiej
+                \end{description}
+                \begin{figure}[H]
+                    \caption{Równoległe Naiwne Sito Erastotenesa wersja Domenowa - \gls{RNSED}}
+                    \includegraphics[width=13cm]{parallel-domain-naive-sieve.png}
+                \end{figure}
+                \begin{figure}[H]
+                    \caption{Równoległe Optymalne Sito Erastotenesa wersja Domenowa - \gls{ROSED}}
+                    \includegraphics[width=13cm]{parallel-domain-optimal-sieve.png}
+                \end{figure}
+                \begin{figure}[H]
+                    \caption{Równoległe Naiwne Sito Erastotenesa wersja Funkcyjna - \gls{RNSEF}}
+                    \includegraphics[width=13cm]{parallel-functional-naive.png}
+                \end{figure}
+                \begin{figure}[H]
+                    \caption{Równoległe Optymalne Sito Erastotenesa wersja Funkcyjna - \gls{ROSEF}}
+                    \includegraphics[width=13cm]{paralel-functional-optimal.png}
+                \end{figure}
+                \begin{figure}[H]
+                    \caption{Równoległe Naiwne Pełne Przeglądanie Listy Liczb - \gls{RNPPLL}}
+                    \includegraphics[width=13cm]{parallel-naive-without-sieve.png}
+                \end{figure}
+                \begin{figure}[H]
+                    \caption{Równoległe Optymalne Pełne Przeglądanie Listy Liczb - \gls{ROPPLL}}
+                    \includegraphics[width=13cm]{parallel-optimal-without-sieve.png}
+                \end{figure}
+                
+                Z powyższych tabel można wyczytać, że najlepsze wyniki otrzymaliśmy dla programów \gls{ROSED}, czyli Równoległe Optymalne Sieto Erastotenesa w wersji Domenowej, dla dowolnej instancji testowej oraz ilość procesorów logicznych.
+                
+            \subsubsection{Tablica Zbiorcza wszystkich uzyskanych wyników}
+            \begin{figure}[H]
+                \includegraphics[width=13cm]{wyniki-agr.png}
+                \caption{Zagregowana Tablica Uzyskanych Pomiarów}
+            \end{figure}
+            
             
         \subsection{Analiza Udziału Poszczególnych Procesorów}
             W poniższym zestawieniu porównane zostaną procentowe udziały wkorzystania każdego z dostępnych procesorów logicznych platformy testującej.
@@ -658,7 +707,24 @@ std::vector<int> funcional::optimizedSive(int start, int end, bool printOutput){
                     \includegraphics[width=13cm]{rownolegly_funcion_bezsita8_MAX2_MAX}
                     \caption{\gls{ROPPLL} dla liczb z zakresu $MAX / 2 .. MAX$ dla 8 procesorów logicznych}
                 \end{figure}
-        
+                
+    \section{Wnioski}    
+        \begin{enumerate}
+            \item Niestety po przejrzeniu powyższych wyników, możemy dojść do konkluzji, że nie wszystkie programy w równym stopniu wykorzystują wewnętrzne struktury proecsora. Najlepszy z analizowanych algorytmów (taki, który uzyskał najwyższą efektywność) czyli \gls{ROSED} wykorzystywał procesor efektywnie w większości badanych instancji. Używał albo wszystkich wątków (4 w przypadku 4 dostępnych i średnio 7 w przypadku 8), albo tylko jednego. Efektywnym wykorzystaniem procesora wykazały się także algorytmy Pełnego Przeglądu Listy Liczby - \gls{ROPPLL} i \gls{RNPPLL}. Dziło się tak dlatego, że nie istaniło w nich za dużo elementów wymagających synchronizacji, oraz pracy na jednym rdzeniu, licznie obecnych w przypadku rodziny algorytmów opartych na Sitach Erastotenesa.
+            \item Używanie tylko jednego wątku, w przypadku algorytmów równoegłych możemy tłumaczyć wyknywaniem operacji typowo sekwencyjnych. Mogły to być np. słaszczanie dwuwymiarowych struktur do jednowymiarowych wektorów, rozdział zadań między wątki.
+            \item Ciekawym porównaniem może być sprawdzenie jak algorytmy równoległe, mająe być usprawnionymi wersjami algorytmów sekwencyjnych wypadły w porównaniu z tymi drugimi. Prezentuje to poniższa tabelka.
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{parallel-seq-comp.png}
+                    \caption{Porównanie \gls{SPPLL} oraz \gls{ROPPLL}}
+                \end{figure}
+                \begin{figure}[H]
+                    \includegraphics[width=13cm]{sieve-comp}
+                    \caption{Porównanie \gls{SSE}, \gls{RNSED}, \gls{RNSEF}}
+                \end{figure}
+            Widzimy w niej, że algorytm równoległy jest szybszy od algorytmu sekwencyjnego, co jest oczekiwanym wynikiem.
+            \item W czasie przeprowadzanych testów zauważyliśmy, że głównym ograniczeniem wpływającym na efektywność naszych algorytmów sekwencyjnych i algorytmów równoległych rodziny Pełnego Przeglądu Listy Liczb, jest ograniczenie \emph{front-end-boud} - ograniczenia wejścia - w granicach ok. 50\%. W przypadku pozostałych algorytmów równoległych problematyczne okazały się ograniczenia back-end - wyjścia, oraz memory-bound - pamięci, jaki i core bound - ilość jednostek wykonawczych.
+            \item Algorytm \gls{RNPPLL} i \gls{ROPPLL} okazały się szybsze od \gls{SPPLL}, jednak w prównaniu z pozostałymi algorytmami znacznie gorsze.
+        \end{enumerate}
     
     \clearpage
     \printnoidxglossaries
