@@ -110,14 +110,19 @@
                     \item[\texttt{omp\_set\_num\_threads()}] ustawia maksymalną ilość wątków jakiej może używać program
                     \item[]   
                 \end{description}
-            
+            \subsubsection{Sekwencyjne Określanie Pierwszości Liczb}
+            \subsubsection{Sekwencyjny Przegląd Listy Liczb}
+            \subsubsection{Sekwencyjne Sitoerastotenesa}
             \subsubsection{Równoległe Określanie Pierwszości Liczb}
                 \paragraph{Podejście Naiwne}
                 \paragraph{Podejście Optymalne}
             \subsection{Równoległy Przegląd Listy Liczb}
                 \paragraph{Podejście Naiwne}
                 \paragraph{Podejście Optymalne}
-            \subsubsection{Równoległe Sito Erastotenesa}
+            \subsubsection{Równoległe Sito Erastotenesa - wersja domenowa}
+                \paragraph{Podejście Naiwne}
+                \paragraph{Podejście Optymalne}
+                \subsubsection{Równoległe Sito Erastotenesa - wersja funkcyjna}
                 \paragraph{Podejście Naiwne}
                 \paragraph{Podejście Optymalne}
     
@@ -125,12 +130,21 @@
         \subsection{Metodyka wykonania eksperymetów}
                 Wszystkie prezentowane eksperymenty zostały uruchomione na maszynie opisanej na początku tego sprawozdania. Do testów zostały użyte wszystkie algorytmy opisane w powyższej części sprawozdania.
                 
+                \noindent
                 Rozmiary instanji testowych to: $(MAX = 7 * 10^7)$
                 \begin{itemize}
                     \item $2 .. MAX$
                     \item $MAX / 2 .. MAX$
                     \item $2 .. MAX / 2$
                 \end{itemize}
+                
+                \noindent
+                Ilości używanych wątków to:
+                \begin{description}
+                    \item[jeden wątek] podejście sekwencyjne
+                    \item[połowa dostępnych procesorów logicznych] każdy z rdzeni procesora powinien dostać swój wątek, w tym wypadku ilość wątków będzie równała się ilości procesorów fizycznych
+                    \item[dostępne rdzenie logiczne] każdy z procesorów logicznych powinien dostać dokładnie po 2 wątki, jest to możliwe dzięki wykorzystaniu technologii HyperThreading implementowanej dla porcesorów Intel
+                \end{description}
         
         \subsection{Charakterystyka Programu Testującego}
             Intel®VTune jest oprogramowaniem służącym do analizy programów sekwencyjnych oraz równoległych. Pozwala on na określenie:
@@ -147,7 +161,14 @@
             W naszym projekcie nie skorzystaliśmy ze wszystkich dostępnych analiz i metryk oferowanych przez VTune, lecz skupiliśmy się na informacjach oferowanych przez Microarchitecture Exploration.
         
         \subsection{Wyniki Uzyskane Dla Algorytmów Sekwencyjnych}
-            Pierwszą grupą testowanych algorytmów, będą algorytmy sekwencyjne. Przeprowadzimy dla nich eksperymenty na wszystkich dostępnych zestawach testowych, które opisaliśmy powyżej. 
+            Pierwszą grupą testowanych algorytmów, będą algorytmy sekwencyjne. Przeprowadzimy dla nich eksperymenty na wszystkich dostępnych zestawach testowych, które opisaliśmy powyżej. Ma to na celu identyfikację wszystkich cech stworzonych przez nas algorytmów sekwencyjnych. Dane zebrane w tym punkcie pomogą nam w określenie zmian wydajnościowych w dalszych analizach dla rozwiązań równoległyh.
+            
+            % TODO: add images
+            
+        \subsection{Wyniki Uzyskane Dla Algorytmów Równoległych}
+            % TODO: add images too
+            
+        
     
     \clearpage
     \printnoidxglossaries
