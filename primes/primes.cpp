@@ -9,10 +9,10 @@ int main(int argc, char* argv[])
 	omp_set_num_threads(4);
 	/*int start = 2;
 	int end = 70000000;*/
-	int start = 2;
-	int end = 35000000;
-	/*int start = 35000000;
-	int end = 70000000;*/
+	/*int start = 2;
+	int end = 35000000;*/
+	int start = 35000000;
+	int end = 70000000;
 	//std::vector<int> v = sequential::withoutSieve(start, end);
 	//std::vector<int> v2 = sequential::withSieve(start, end);
 	//compareVectors(v, v2);
