@@ -193,15 +193,134 @@ std::vector<int> sequential::withSieve(int start, int end, bool printOutput)
             \subsubsection{Równoległe Określanie Pierwszości Liczb}
                 \paragraph{Podejście Naiwne}
                 \paragraph{Podejście Optymalne}
-            \subsection{Równoległy Przegląd Listy Liczb}
+            \subsection{Równoległy Pelny Przegląd Listy Liczb}
+                Zrównoleglenie Sekwencyjnego algorytmu Przeglądania Listy Liczb, opiera się na podziale \gls{WLU} pomiędzy wszystkie wątki. W takim wypadku każdy wątek będzie odpowiedzialny za przeszukiwanie swojej i tylko swojej części \gls{WLU}. Sercem algorytmu jest funkcja $isPrime$ wywoływana dla każdej liczby w celu sprawdzenia, czy jest pierwsza. Jeżeli taka jest to należy ją zapisać do wektora wyjściowego.
                 \paragraph{Podejście Naiwne}
+                    W wersji naiwnej algorytm zapisuje wyniki do jednowymiarowego wektora. Takie rozwiązanie nie jest poprawne. W skrajnych przypadkach może wystąpić zjawisko wyścigu. Okaże się, że istnieją momenty, w których wiele wątków stara się zapisać do wektora wynikowego efekty swojego przetwarzania. Spowoduje to, że wynikowy wektor może zostać łatwo uszkodzony. Dodatkowo program jest wrażliwy na wystąpienie zjawiska false sharingu. Nie spowoduje on niepoprawnego działania kodu, jednak znacząco wpłynie na prędkość przetwarzania. Stanie się tak, ponieważ elementy wekotra wyjściowego są ułożone w pamięci jeden obok drugiego, co łatwo prowadzi do uniważniania sąsiednich liń pamięci. 
+                
                 \paragraph{Podejście Optymalne}
+                    Poprawa wersji naiwnej jest prosta. Wystarczy dodać strukturę pośrednią. W taki sposób, że wątki w sposób równoległy będą do niej zapisywać, a później w sposób sekwencyjny spłaszczymy ją do jednowymiarowego wektora. Wspomnianą strukturą może być dwuwymiarowy wektor. W takim wypadku każdy z procesów będzie zapisywał do swojego własnego wiersza, a na końcu w sposób sekwencyjny połączymy wszystkie wiersze w jedną tabelę.
+                    
+                    Zjawisko false sharingu nie zajdzie, ponieważ komórki pamięci będą znacząco od siebie oddzielone - conjmniej o jeden wiersz w wektorze. Zjawisko wyścigu także zostanie wyeliminowane. Żadne dwa wątki nie mogą zapisywać do tego samego wiersza, co oznacza, że mają swoje osobne przestrzenie robocze.
+                \begin{figure}[H]
+                    \begin{minted}[linenos]{cpp}
+std::vector<int> funcional::primes(int start, int end, bool printOutput)
+{
+int size = end - start + 1;
+std::vector<int> result;
+double timeStart, timeStop;
+int threadsCount = omp_get_max_threads();
+result.reserve(size);
+timeStart = omp_get_wtime();
+std::vector<std::vector<int>> privateResults(threadsCount, std::vector<int>());
+for (int i = 0; i < threadsCount; i++) privateResults[i].reserve(end - start + 1);
+#pragma omp parallel
+{
+#pragma omp for
+    for (int i = start; i <= end; i++){
+        if (isPrime(i)) privateResults[omp_get_thread_num()].push_back(i);
+    }
+}
+for (size_t i = 0; i < threadsCount; i++) result.insert(result.end(), privateResults[i].begin(), privateResults[i].end());
+timeStop = omp_get_wtime();
+if (printOutput) period(timeStart, timeStop, "funcional::primes");
+return result;
+}
+                    \end{minted}
+                    \caption{Optymalny Równoległy Przegląd Listy Liczb}
+                \end{figure}
+                
+                
             \subsubsection{Równoległe Sito Erastotenesa - wersja domenowa}
+                Zrównoleglenie \gls{SE} dla podejścia domenowego polega na przekazaniu, całego \gls{WLU}, ale tylko części wektora liczb pierwszych. W taki sposób każdy wątek będzie odpowiedzialny za sprawdzenie, czy elementy \gls{WLU} są podzielne, przez liczby pierwsze znane dla niego. Tak samo jak w sekwencyjnym \gls{SE} i tutaj można zastosować optymalizację w postaci ograniczenia największej liczby pierwszej do sprawdzenia do pierwiastka kwadratowego największej z liczb w \gls{WLU}.
+                
+                Problemem wersji naiwnej jest niepoprawność generowanych wyników, oraz występujące zjawisko false sharingu - oba spowodowane używaniem wspólnej listy $isPrime$. Jego geneza jest dokładnie taka sama jak w przypadku naiwej wersji algorytmu \gls{PPLL}
+                
                 \paragraph{Podejście Naiwne}
+                    W tej wersji naiwnej 
+                    \begin{figure}
+                        \begin{minted}[linenos]{cpp}
+std::vector<int> domain::basicSieve(int start, int end, bool printOutput){
+    double timeStart, timeStop;
+    int sqrtEnd = (int)sqrt(end);
+    std::vector<int> primes = domain::primes(2, sqrtEnd, false);
+    std::vector<bool> isPrime(end + 1, false);
+    timeStart = omp_get_wtime();
+#pragma omp parallel 
+    {
+#pragma omp for schedule(static)
+        for (int i = 0; i < primes.size(); i++){
+            int multiple = primes[i] * 2;
+            while (multiple <= end) {
+                isPrime[multiple] = true;
+                multiple += primes[i];
+            }
+        }
+    }
+    int size = end - start + 1;
+    std::vector<int> result;
+    result.reserve(size);
+    for (int i = start; i <= end; i++){
+        if (!isPrime[i]) {
+            result.push_back(i);
+        }
+    }
+    timeStop = omp_get_wtime();
+    if (printOutput) period(timeStart, timeStop, "domain::basicSieve");
+    return result;
+}
+                        \end{minted}
+                        \caption{Równoległe Naiwne Sito Erastotenesa w Wersji Domenowej}
+                    \end{figure}
+                    
                 \paragraph{Podejście Optymalne}
+                    W przypadku podejścia domenowego znaczącej zmianie ulega sposób przetrzymywania rozwiązań. Od teraz przechowujemy je w dwuwymiarowym wektorze. Na końcu spłaszczamy tą dwuwymiarową strukturę do jednowymiarowego wektora. Takie rozwiązanie pomoże nam zapobiec zjawisku false sharingu, oraz zjawisku wyścigu. Dzięki temu wyniki generowane przez program będą poprawne i wykonane w sposób efektywny.
+                    \begin{figure}[H]
+                        \begin{minted}[linenos]{cpp}
+
+std::vector<int> domain::optimizedSive(int start, int end, bool printOutput){
+    double timeStart, timeStop;
+    int threadsCount = omp_get_max_threads();
+    int sqrtEnd = (int)sqrt(end);
+    std::vector<int> primes = domain::primes(2, sqrtEnd, false);
+    std::vector<std::vector<bool>> isPrime(threadsCount, std::vector<bool>(end + 1, false));
+    timeStart = omp_get_wtime();
+#pragma omp parallel
+    {
+#pragma omp for schedule(dynamic)
+        for (int i = 0; i < primes.size(); i++){
+            int multiple = primes[i] * 2;
+            while (multiple <= end) {
+                isPrime[omp_get_thread_num()][multiple] = true;
+                multiple += primes[i];
+            }
+        }
+    }
+    timeStop = omp_get_wtime();
+    int size = end - start + 1;
+    std::vector<int> result;
+    result.reserve(size);
+    for (int i = start; i <= end; i++){
+        int sum = false;
+        for (int j = 0; j < threadsCount; j++){
+            sum |= isPrime[j][i];
+        }
+        if (!sum) {
+            result.push_back(i);
+        }
+
+    }
+    period(timeStart, timeStop, "domain::optimizedSive");
+    return result;
+}
+                        \end{minted}
+                        \caption{Równoległe Optymalne Sito Erastotenesa w Wersji Domenowej}
+                    \end{figure}
+                
                 \subsubsection{Równoległe Sito Erastotenesa - wersja funkcyjna}
-                \paragraph{Podejście Naiwne}
-                \paragraph{Podejście Optymalne}
+                    
+                    \paragraph{Podejście Naiwne}
+                    \paragraph{Podejście Optymalne}
     
     \section{Prezentacja i Omówienie eksperymentu obliczeniowo-pomiarowego}
         \subsection{Metodyka wykonania eksperymetów}
