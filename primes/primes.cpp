@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[])
 {
-	omp_set_num_threads(8);
+	omp_set_num_threads(4);
 	/*int start = 2;
 	int end = 70000000;*/
 	/*int start = 2;
@@ -20,14 +20,14 @@ int main(int argc, char* argv[])
 	//std::vector<int> v3 = domain::basicSieve(start, end);
 	//compareVectors(v, v3);
 	
-	std::vector<int> v4 = domain::optimizedSive(start, end);
-	/*compareVectors(v, v4);
+	//std::vector<int> v4 = domain::optimizedSive(start, end);
+	//compareVectors(v, v4);
 
 	std::vector<int> v5 = funcional::basicSieve(start, end);
-	compareVectors(v, v5);
+	//compareVectors(v, v5);
 
-	std::vector<int> v6 = funcional::optimizedSive(start, end);
-	compareVectors(v, v6);*/
+	//std::vector<int> v6 = funcional::optimizedSive(start, end);
+	//compareVectors(v, v6);
 
 
 
