@@ -2,6 +2,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{scrextend}
 \usepackage{glossaries}
+\usepackage{minted}
 
 \makenoidxglossaries
 
@@ -111,7 +112,49 @@
                     \item[]   
                 \end{description}
             \subsubsection{Sekwencyjne Określanie Pierwszości Liczb}
+                \begin{figure}[H]
+                    \begin{minted}[linenos]{cpp}
+bool isPrime(int p)
+{
+	int div = 2;
+	double sqrtP = (int)sqrt(p) + 1;
+
+	for (; div < sqrtP; ++div){ 
+		if(p % div == 0) 
+			return false;
+	}
+
+	return true;
+}
+                    \end{minted}
+                    \caption{Sekwencyjne Określanie Pierwszości Liczb}
+                \end{figure}
+                Dokładne działanie algorytmu zostało zaprezentowane w części teoretycznej. Jedyną różnicą jest zastosowanie reszty z dzielenia jako metody określania dzielnika. Jeżeli wynikiem reszty z dzielenia jest zero to wiadomo, że $div$ jest jednym z dzielników liczby $p$, co oznacza, że liczba $p$ nie jest pierwsza.
+                
             \subsubsection{Sekwencyjny Przegląd Listy Liczb}
+                \begin{figure}[H]
+                    \begin{minted}[linenos]{cpp}
+std::vector<int> sequential::withoutSieve(int start, int end, bool printOutput){
+    int size = end - start + 1;
+    std::vector<int> result;
+    double timeStart, timeStop;
+                
+    result.reserve(size);
+    timeStart = omp_get_wtime();
+    for (size_t i = start; i <= end; ++i){
+        if (isPrime(i)) {
+            result.push_back(i);
+        }
+    }
+    timeStop = omp_get_wtime();
+    if(printOutput) period(timeStart, timeStop, "sequential::withoutSieve");
+                
+    return result;
+}
+                    \end{minted}
+                    \caption{Sekwecyjny Przegląd Listy Liczb}
+                \end{figure}
+                Tak jak opisano w części teoretycznej polega na pełnym przeglądzie wszystkich liczb z podanego zakresu. Aby zpoptymalizować wykonanie programu ustalamy wielkość wynikowego wektora na samym początku. Następnie w pętli sprawdzamy wszystkie liczby w zakresie od \emph{start} do \emph{end}. Samo sprawdzanie odbywa się w funkcji \emph{isPrime}, która została szczególowo opisana wcześniej.
             \subsubsection{Sekwencyjne Sitoerastotenesa}
             \subsubsection{Równoległe Określanie Pierwszości Liczb}
                 \paragraph{Podejście Naiwne}
