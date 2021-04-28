@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[])
 {
-	omp_set_num_threads(4);
+	omp_set_num_threads(8);
 	/*int start = 2;
 	int end = 70000000;*/
 	/*int start = 2;
