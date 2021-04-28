@@ -29,7 +29,8 @@ int main(int argc, char* argv[])
 	//std::vector<int> v6 = funcional::optimizedSive(start, end);
 	//compareVectors(v, v6);
 
-	std::vector<int> v7 = domain::primes(start, end);
+	//std::vector<int> v7 = domain::primes(start, end);
+	std::vector<int> v8 = funcional::primes(start, end);
 
 	return 0;
 }
