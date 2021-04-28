@@ -707,6 +707,11 @@ std::vector<int> funcional::optimizedSive(int start, int end, bool printOutput){
                     \includegraphics[width=13cm]{rownolegly_funcion_bezsita8_MAX2_MAX}
                     \caption{\gls{ROPPLL} dla liczb z zakresu $MAX / 2 .. MAX$ dla 8 procesorów logicznych}
                 \end{figure}
+            Z powyższych wykresów możemy z łatwością zauważyć, że wszystkie programy sekwencyjne przez nas testowane, przez większość czasu wykonują się tylko na jednym rdzeniu, co jest rezultatem oczekiwanym. Dzieje się tak dlatego, gdyż nie wykorzystują mechanizmu wielowątkowości.
+            
+            Ciekawymi wykresami są te powstałe w wyniku testowania algorytmów rodziny Pełnego Przeglądu Listy Liczb. Wykorzystują one bardzo optymalnie procesor. Widzimy, że przez większość czasu utrzymują się na wszystkich lub prawie wszystkich rdzeniach. Prostym wytłumaczeniem tego faktu jest, brak elementów wymagających obliczeń sekwencyjnych.
+            
+            
                 
     \section{Wnioski}    
         \begin{enumerate}
