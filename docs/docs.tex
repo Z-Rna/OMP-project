@@ -64,7 +64,7 @@
                 \item[System Operacyjny] Windows 10 Pro 20H2
                 \item[IDE] Visual Studio 2019
                 % TODO: check vtune version
-                \item[Oprogramowanie Testujące] 5t4iori
+                \item[Oprogramowanie Testujące] Intel®VTune\texttrademark Profiler
             \end{description}
         \end{addmargin}
         
@@ -113,10 +113,41 @@
             
             \subsubsection{Równoległe Określanie Pierwszości Liczb}
                 \paragraph{Podejście Naiwne}
+                \paragraph{Podejście Optymalne}
             \subsection{Równoległy Przegląd Listy Liczb}
-            
+                \paragraph{Podejście Naiwne}
+                \paragraph{Podejście Optymalne}
             \subsubsection{Równoległe Sito Erastotenesa}
+                \paragraph{Podejście Naiwne}
+                \paragraph{Podejście Optymalne}
+    
+    \section{Prezentacja i Omówienie eksperymentu obliczeniowo-pomiarowego}
+        \subsection{Metodyka wykonania eksperymetów}
+                Wszystkie prezentowane eksperymenty zostały uruchomione na maszynie opisanej na początku tego sprawozdania. Do testów zostały użyte wszystkie algorytmy opisane w powyższej części sprawozdania.
                 
+                Rozmiary instanji testowych to: $(MAX = 7 * 10^7)$
+                \begin{itemize}
+                    \item $2 .. MAX$
+                    \item $MAX / 2 .. MAX$
+                    \item $2 .. MAX / 2$
+                \end{itemize}
+        
+        \subsection{Charakterystyka Programu Testującego}
+            Intel®VTune jest oprogramowaniem służącym do analizy programów sekwencyjnych oraz równoległych. Pozwala on na określenie:
+            \begin{itemize}
+                \item miejsc oraz funkcji, w których program spędził najwięcej czasu
+                \item secji kodu, które nieefektywnie wykorzystują zasoby procesora
+                \item miejsc w kodzie, które należy zoptymalizować dla lepszego działania sekwencyjnego oraz wielowątkowego
+                \item punktów synchronizacji, które wprowadzają największe opóźnienia
+                \item gdzie, kiedy i dlaczego program spędza duże ilości czasu na operacjach I/O
+                \item czy program jest ograniczany przez CPU czy GPU
+                \item wpływ różnych metod synchronizacji na efektywność programu
+                \item problemów sprzętowych, np. false sharing
+            \end{itemize}
+            W naszym projekcie nie skorzystaliśmy ze wszystkich dostępnych analiz i metryk oferowanych przez VTune, lecz skupiliśmy się na informacjach oferowanych przez Microarchitecture Exploration.
+        
+        \subsection{Wyniki Uzyskane Dla Algorytmów Sekwencyjnych}
+            Pierwszą grupą testowanych algorytmów, będą algorytmy sekwencyjne. Przeprowadzimy dla nich eksperymenty na wszystkich dostępnych zestawach testowych, które opisaliśmy powyżej. 
     
     \clearpage
     \printnoidxglossaries
