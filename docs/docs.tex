@@ -155,7 +155,41 @@ std::vector<int> sequential::withoutSieve(int start, int end, bool printOutput){
                     \caption{Sekwecyjny Przegląd Listy Liczb}
                 \end{figure}
                 Tak jak opisano w części teoretycznej polega na pełnym przeglądzie wszystkich liczb z podanego zakresu. Aby zpoptymalizować wykonanie programu ustalamy wielkość wynikowego wektora na samym początku. Następnie w pętli sprawdzamy wszystkie liczby w zakresie od \emph{start} do \emph{end}. Samo sprawdzanie odbywa się w funkcji \emph{isPrime}, która została szczególowo opisana wcześniej.
+                
             \subsubsection{Sekwencyjne Sitoerastotenesa}
+                \begin{figure}
+                    \begin{minted}[linenos]{cpp}
+std::vector<int> sequential::withSieve(int start, int end, bool printOutput)
+{
+    int sqrtEnd = (int)sqrt(end);
+    double timeStart, timeStop;
+    timeStart = omp_get_wtime();
+    std::vector<int> primes = sequential::withoutSieve(2, sqrtEnd, false);
+    std::vector<bool> isPrime(end + 1, false);
+    int primesSize = primes.size();
+    for (auto& p: primes){
+        int multiple = p * 2;
+        while (multiple <= end) {
+            isPrime[multiple] = true;
+            multiple += p;
+        }
+    }
+    int size = end - start + 1;
+    std::vector<int> result;
+    result.reserve(size);
+    for (size_t i = start; i <= end; i++){
+        if (!isPrime[i]) result.push_back(i);
+    }
+    timeStop = omp_get_wtime();
+    if (printOutput) period(timeStart, timeStop, "sequential::withSieve");
+        return result;
+    return std::vector<int>();
+}
+                    \end{minted}
+                    \caption{Sekwencyjne Sito Erastotenesa}
+                \end{figure}
+                Dokładne dziłanie tego algorytmu zostało także zaprezentowane w części teoretycznej. Algorytm rozpoczyna od wyznaczenia wszystkich liczb pierwszych, aż do pierwiastka górnej granicy przeszukiwania \emph{(wyjaśnienie w części teoretycznej)}. Następnie w pierwszej pętli $for$ usuwamy wszystkie wielokrotności kolejnych liczb pierwszych znajdujących się w tablicy $primes$. Jeżeli dana liczba została oznaczona jako $true$ to mamy pewność, że jest liczbą złożoną. Po sprawdzeniu ostatniej liczby z wektora $primes$, możemy przepisać wszystkie liczby, które nie zostały zakwalifikowane jako złożone.
+                
             \subsubsection{Równoległe Określanie Pierwszości Liczb}
                 \paragraph{Podejście Naiwne}
                 \paragraph{Podejście Optymalne}
