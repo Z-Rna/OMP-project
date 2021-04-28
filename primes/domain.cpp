@@ -63,7 +63,7 @@ std::vector<int> domain::basicSieve(int start, int end, bool printOutput)
 
 #pragma omp parallel 
     {
-#pragma omp for schedule(static)
+#pragma omp for
         for (int i = 0; i < primes.size(); i++)
         {
             int multiple = primes[i] * 2;

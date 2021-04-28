@@ -331,10 +331,10 @@
        <targetName>launch</targetName>
        <use_app_dir_as_work_dir type="bool">true</use_app_dir_as_work_dir>
        <launch_app.app_to_launch>C:\Users\Zuzanna\source\repos\primes\x64\Release\primes.exe</launch_app.app_to_launch>
+       <launch_app.working_folder>C:\Users\Zuzanna\source\repos\primes\primes\</launch_app.working_folder>
        <launch_app.app_parameters></launch_app.app_parameters>
        <launch_app.environment>PATH=C:\Program Files (x86)\Intel\oneAPI\compiler\2021.2.0\windows\redist\intel64_win\compiler;%PATH%</launch_app.environment>
        <result_directory.path>C:\Users\Zuzanna\source\repos\primes\primes\VTune Profiler Results\primes\r@@@{at}</result_directory.path>
-       <launch_app.working_folder>C:\Users\Zuzanna\source\repos\primes\x64\Release</launch_app.working_folder>
        <context>
         <contextValue>
          <id>allowMultipleRuns</id>
