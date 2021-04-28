@@ -1,10 +1,7 @@
-﻿  funcional.cpp
-C:\Users\Zuzanna\source\repos\primes\primes\funcional.cpp(25,26): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-C:\Users\Zuzanna\source\repos\primes\primes\funcional.cpp(50,27): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
-C:\Users\Zuzanna\source\repos\primes\primes\funcional.cpp(100,27): warning C4018: "<": niezgodność typu ze znakiem/bez znaku
+﻿  primes.cpp
   Trwa generowanie kodu
-  2 of 342 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+  113 of 210 functions (53.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    9 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   primes.vcxproj -> C:\Users\Zuzanna\source\repos\primes\Release\primes.exe

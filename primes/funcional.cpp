@@ -11,9 +11,7 @@ std::vector<int> funcional::primes(int start, int end, bool printOutput)
     timeStart = omp_get_wtime();
 
     std::vector<std::vector<int>> privateResults(threadsCount, std::vector<int>());
-    for (int i = 0; i < threadsCount; i++) {
-        privateResults[i].reserve(end - start + 1);
-    }
+    for (int i = 0; i < threadsCount; i++) privateResults[i].reserve(end - start + 1);
 #pragma omp parallel
     {
 #pragma omp for
@@ -22,10 +20,8 @@ std::vector<int> funcional::primes(int start, int end, bool printOutput)
             if (isPrime(i)) privateResults[omp_get_thread_num()].push_back(i);
         }
     }
-    for (size_t i = 0; i < threadsCount; i++)
-    {
-        result.insert(result.end(), privateResults[i].begin(), privateResults[i].end());
-    }
+    for (size_t i = 0; i < threadsCount; i++) result.insert(result.end(), privateResults[i].begin(), privateResults[i].end());
+
     timeStop = omp_get_wtime();
     if (printOutput) period(timeStart, timeStop, "funcional::primes");
 
@@ -52,9 +48,8 @@ std::vector<int> funcional::basicSieve(int start, int end, bool printOutput)
             int multiple = primes[i] * 2;
 
             int expr = ((privateA - primes[i] * 2) / primes[i]) * primes[i];
-            if (expr > 0) {
-                multiple += expr;
-            }
+
+            if (expr > 0) multiple += expr;
 
             while (multiple <= privateB) {
                 isPrime[multiple] = true;
@@ -67,12 +62,7 @@ std::vector<int> funcional::basicSieve(int start, int end, bool printOutput)
 
     result.reserve(size);
 
-    for (int i = start; i <= end; i++)
-    {
-        if (!isPrime[i]) {
-            result.push_back(i);
-        }
-    }
+    for (int i = start; i <= end; i++) if (!isPrime[i]) result.push_back(i);
 
     timeStop = omp_get_wtime();
 
@@ -88,10 +78,10 @@ std::vector<int> funcional::optimizedSive(int start, int end, bool printOutput)
 
     int sqrtEnd = (int)sqrt(end);
     std::vector<int> primes = funcional::primes(2, sqrtEnd, false);
-    std::vector<std::vector<bool>> isPrime(threadsCount, std::vector<bool>());
-    for (int i = 0; i < threadsCount; i++) {
+    std::vector<std::vector<bool>> isPrime(threadsCount, std::vector<bool>(end + 1, false));
+    /*for (int i = 0; i < threadsCount; i++) {
         isPrime[i] = std::vector<bool>(end + 1, false);
-    }
+    }*/
     timeStart = omp_get_wtime();
 #pragma omp parallel
     {
